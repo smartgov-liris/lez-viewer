@@ -8,11 +8,15 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "leaflet": "^1.5.1",
     "vue": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.10.0",
     "@vue/cli-service": "^3.10.0",
+    "coffee-loader": "^0.9.0",
+    "coffeescript": "^2.3.2",
+    "vue-cli-plugin-coffeescript": "0.0.3",
     "vue-template-compiler": "^2.6.10"
   }
 }
