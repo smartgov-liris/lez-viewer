@@ -21,11 +21,15 @@ export default
 	components:
 		"tile-popup": TilePopup
 
+	props:
+		establishments:
+			required: true
+			type: Array
+
 	data: () ->
 		lmap: null
 		pollutant: "NOx"
 		pollutionPeeks: {}
-		establishments: []
 		selectedEstablishment: null
 		tiles: {}
 		selectedTile: null
@@ -39,6 +43,23 @@ export default
 			}).addTo(this.lmap)
 
 			L.control.scale().addTo(this.lmap)
+
+		displayEstablishments: () ->
+			self = this
+			for establishment in this.establishments
+				do (establishment) ->
+					circle = L.circle(establishment.location).addTo(self.lmap)
+					if Object.keys(establishment.rounds).length
+						circle.setStyle(
+							color: "black"
+							)
+					else
+						circle.setStyle(
+							color: "red"
+							)
+					establishment.mapObject = circle
+			this.selectedEstablishment = self.establishments[0].mapObject
+
 
 		fetchTiles: () ->
 			url = "tiles/tiles.json"
@@ -80,54 +101,17 @@ export default
 								tile.lRectangle = lRectangle
 			)
 
-		fetchEstablishments: () ->
-			url = "establishments/establishments.json"
-			self = this
-			
-			fetch(url)
-			.catch((error) ->
-				console.log error
-			)
-			.then((response) ->
-				response.json()
-			)
-			.then((json) ->
-				# self.establishments = json
-
-				for establishment in json
-					do (establishment) ->
-						circle = L.circle(establishment.location).addTo(self.lmap)
-						if Object.keys(establishment.rounds).length
-							circle.setStyle(
-								color: "black"
-								)
-						else
-							circle.setStyle(
-								color: "red"
-								)
-						establishment.mapObject = circle
-						self.establishments.push(establishment)
-						
-
-				self.selectedEstablishment = self.establishments[0].mapObject
-				)
-
-
-
-
-
 
 	mounted: () ->
 		this.buildMap()
 		this.fetchTiles()
-		this.fetchEstablishments()
 
 </script>
 
 <style>
 #map-container {
-	width: 90%;
-	height: 800px;
+	width: 100%;
+	height: 100%;
 	margin-left: auto;
 	margin-right: auto;
 }
