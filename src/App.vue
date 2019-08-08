@@ -10,6 +10,7 @@
 			</div>
 		</div>
 		<div id="main_body" class="w3-container">
+			<lez v-if="selectedTab == 'lez'" :establishments="establishments" ref="lez"/>
 			<viewer v-if="selectedTab == 'viewer'" :establishments="establishments" ref="viewer"/>
 		</div>
 	</div>
@@ -17,14 +18,16 @@
 
 <script lang="coffee">
 import Viewer from './components/emissions/Viewer.vue'
+import Lez from './components/lez/Lez.vue'
 
 export default
 	name: 'app'
 	components:
+		lez: Lez
 		viewer: Viewer
 	
 	data: () ->
-		selectedTab: "viewer"
+		selectedTab: ""
 		establishments: []
 
 	methods:
@@ -47,7 +50,19 @@ export default
 						self.establishments.push(establishment)
 				)
 			.then(() ->
-				self.$refs.viewer.displayEstablishments()
+				self.selectLez()
+				)
+
+		selectLez: () ->
+			this.selectedTab = "lez"
+			this.$nextTick(() ->
+				this.$refs.lez.centerMap()
+				)
+
+		selectViewer: () ->
+			this.selectedTab = "viewer"
+			this.$nextTick(() ->
+				this.$refs.viewer.displayEstablishments()
 				)
 	
 	mounted: () ->
