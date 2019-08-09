@@ -1,6 +1,6 @@
 <template>
 
-	<div id="map-container">
+	<div id="viewer-map-container">
 		<div id="lez-map"/>
 
 		<tile-popup v-if="selectedTile" v-bind:tile="selectedTile">
@@ -109,7 +109,7 @@ export default
 </script>
 
 <style>
-#map-container {
+#viewer-map-container {
 	width: 100%;
 	height: 100%;
 	margin-left: auto;

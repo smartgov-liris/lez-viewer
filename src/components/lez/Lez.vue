@@ -1,10 +1,37 @@
 <template>
 
 	<div id="lez-container" class="w3-cell-row">
-		<div id="lez-toolbar" class="w3-cell">
+		<div id="lez-toolbar" class="w3-cell w3-cell-top">
+			<h3>Perimiter</h3>
+			<div class="w3-bar">
+				<button
+					v-if="mode == 'view'"
+					class="w3-blue w3-button w3-round w3-margin-right"
+					v-on:click="buildMode">
+					<i class="fa fa-pencil-ruler fa-lg"></i>
+				</button>
+				<button
+					v-if="mode == 'build'"
+					class="w3-blue w3-button w3-round w3-margin-right"
+					v-on:click="viewMode">
+					<i class="fa fa-draw-polygon fa-lg"></i>
+				</button>
+
+				<button
+					class="w3-red w3-button w3-round w3-margin-right"
+					v-on:click="clear">
+					<i class="fa fa-eraser fa-lg"></i>
+				</button>
+				<button class="w3-green w3-button w3-round">
+					<i class="fa fa-download fa-lg"></i>
+				</button>
+			</div>
+			<p v-if="mode == 'build'">
+				<i>Click on the map, and use CTRL+Click to add points.</i>
+			</p>
 
 		</div>
-		<div id="map-container" class="w3-cell">
+		<div id="lez-map-container" class="w3-cell">
 			<div id="lez-map"/>
 		</div>
 	</div>
@@ -34,8 +61,11 @@ export default
 	data: () ->
 		lmap: null
 		ctrlPressed: false
-		perimeter: []
 		points: []
+		lines: []
+		polygon: null
+		closeLine: null
+		mode: "view"
 
 	methods:
 		buildMap: () ->
@@ -70,7 +100,27 @@ export default
 			this.lmap.fitBounds([topLeft, bottomRight])
 
 		buildMode: () ->
+			console.log "Enter build mode"
+
+			this.mode = "build"
+
+			if this.polygon
+				this.polygon.remove()
+
+			_point.addTo(this.lmap) for _point in this.points
+			_line.addTo(this.lmap) for _line in this.lines
+
+			if this.closeLine
+				this.closeLine.addTo(this.lmap)
+
 			self = this
+
+			closeLineMoveHandler = (event) ->
+				self.closeLine.setLatLngs([
+					event.latlng,
+					self.closeLine.getLatLngs()[1]
+					])
+
 			this.lmap.on("keydown", (event) ->
 				if event.originalEvent.code == "ControlLeft"
 					self.ctrlDown = true
@@ -82,15 +132,15 @@ export default
 
 			this.lmap.on("click", (event) ->
 				if self.ctrlDown
-					self.perimeter.push(event.latlng)
 					point = L.marker(
 						event.latlng,
 						icon: redIcon
 						draggable: true
 						autoPan: true
 					)
-					self.points.push(point)
 					point.addTo(self.lmap)
+					self.points.push(point)
+
 
 					if self.points.length > 1
 						startPoint = self.points[self.points.length - 2]
@@ -99,6 +149,7 @@ export default
 							point.getLatLng()
 							])
 						line.addTo(self.lmap)
+						self.lines.push(line)
 
 						point.on("move", (event) ->
 							line.setLatLngs([
@@ -114,7 +165,63 @@ export default
 								])
 							)
 
+					if self.points.length == 3
+						self.closeLine = L.polyline([
+							self.points[2].getLatLng(),
+							self.points[0].getLatLng(),
+							]).addTo(self.lmap)
+
+						self.points[0].on("move", (event) ->
+								self.closeLine.setLatLngs([
+									self.closeLine.getLatLngs()[0],
+									event.latlng
+								])
+							)
+						self.points[2].on("move", closeLineMoveHandler)
+
+					if self.points.length > 3
+						self.closeLine.setLatLngs([
+							self.points[self.points.length - 1].getLatLng(),
+							self.points[0].getLatLng()
+							])
+
+						self.points[self.points.length - 2].off("move", closeLineMoveHandler)
+						self.points[self.points.length - 1].on("move", closeLineMoveHandler)
+
+
 				)
+		viewMode: () ->
+			this.lmap.off("keydown")
+			this.lmap.off("keyup")
+			this.lmap.off("click")
+
+			this.mode = "view"
+			point.remove() for point in this.points
+			line.remove() for line in this.lines
+			if this.closeLine
+				this.closeLine.remove()
+
+			perimeter = []
+			perimeter.push(point.getLatLng()) for point in this.points
+			this.polygon = L.polygon(
+				perimeter,
+				color: "green"
+			)
+			this.polygon.addTo(this.lmap)
+
+		clear: () ->
+			_point.remove() for _point in this.points
+			_line.remove() for _line in this.lines
+			if this.closeLine
+				this.closeLine.remove()
+
+			this.points = []
+			this.lines = []
+			this.closeLine = null
+
+			if this.polygon
+				this.polygon.remove()
+
 
 	
 	mounted: () ->
@@ -131,13 +238,12 @@ export default
 }
 
 #lez-toolbar {
-	width: 25%;
 	height: 100%;
 }
 
-#map-container {
-	width: 75%;
+#lez-map-container {
 	height: 100%;
+	width: 75%;
 	margin-left: auto;
 	margin-right: auto;
 }
