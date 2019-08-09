@@ -22,13 +22,23 @@
 					v-on:click="clear">
 					<i class="fa fa-eraser fa-lg"></i>
 				</button>
-				<button class="w3-green w3-button w3-round">
-					<i class="fa fa-download fa-lg"></i>
-				</button>
 			</div>
 			<p v-if="mode == 'build'">
 				<i>Click on the map, and use CTRL+Click to add points.</i>
 			</p>
+
+			<h3> Allowed vehicles </h3>
+			<div v-for="(label, critair) in critairs">
+			<input class="w3-check" type="checkbox" v-bind:value="critair" v-model="allowed">
+			<label> {{label}} </label>
+			</div>
+
+			
+			<h3 class="w3-margin-top"> Download </h3>
+			<button class="w3-green w3-button w3-round">
+				<i class="fa fa-download fa-lg"></i>
+				Download JSON
+			</button>
 
 		</div>
 		<div id="lez-map-container" class="w3-cell">
@@ -51,6 +61,13 @@ redIcon = L.icon({
     iconAnchor: [15, 15],
 })
 
+critairEnum =
+	critair1: "CRITAIR_1"
+	critair2: "CRITAIR_2"
+	critair3: "CRITAIR_3"
+	critair4: "CRITAIR_4"
+	critair5: "CRITAIR_5"
+
 export default
 
 	props:
@@ -66,6 +83,13 @@ export default
 		polygon: null
 		closeLine: null
 		mode: "view"
+		critairs:
+			critair1: "CRIT'air 1"
+			critair2: "CRIT'air 2"
+			critair3: "CRIT'air 3"
+			critair4: "CRIT'air 4"
+			critair5: "CRIT'air 5"
+		allowed: []
 
 	methods:
 		buildMap: () ->
@@ -244,8 +268,7 @@ export default
 #lez-map-container {
 	height: 100%;
 	width: 75%;
-	margin-left: auto;
-	margin-right: auto;
+	padding-bottom: 8px;
 }
 
 #lez-map {
