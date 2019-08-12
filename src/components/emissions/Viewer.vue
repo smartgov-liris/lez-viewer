@@ -1,10 +1,38 @@
 <template>
+	<div id="viewer-container" class="w3-cell-row">
+		<div id="viewer-toolbar" class="w3-cell w3-cell-top">
+			<h3 class="w3-margin-top"> Data </h3>
+			<viewer-data-loader
+				v-on:loaded="handleDataLoaded"
+				/>
 
-	<div id="viewer-map-container">
-		<div id="lez-map"/>
+			<h3> Display </h3>
+			<display-config
+				ref="displayConfig"
+				v-bind:lmap="lmap"
+				v-bind:boundingBox="boundingBox"
+				v-bind:establishments="establishments"
+				v-bind:tiles="tiles"/>
 
-		<tile-popup v-if="selectedTile" v-bind:tile="selectedTile">
-		</tile-popup>
+			<h3> Zoom </h3>
+			<zoom-config
+				v-bind:lmap="lmap"
+				/>
+
+			<h3> Color </h3>
+			<color-config
+				ref="colorConfig"
+				v-bind:lmap="lmap"
+				v-bind:tiles="tiles"
+				v-bind:pollutionPeeks="pollutionPeeks"
+				/>
+		</div>
+		<div id="viewer-map-container" class="w3-cell">
+			<div id="viewer-map"/>
+
+			<tile-popup v-if="selectedTile" v-bind:tile="selectedTile">
+			</tile-popup>
+		</div>
 	</div>
 
 </template>
@@ -15,43 +43,48 @@ import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
 import TilePopup from "./map/TilePopup"
+import DisplayConfig from "./toolbar/DisplayConfig"
+import ZoomConfig from "./toolbar/ZoomConfig"
+import ColorConfig from "./toolbar/ColorConfig"
+import ViewerDataLoader from "./toolbar/ViewerDataLoader"
 
-###
-value in [0, 1]
-###
-linearHueGradient = (min, max, value) ->
-	"hsl(#{min + value * (max - min)},100%,50%)"
 
 export default
 
 	components:
 		"tile-popup": TilePopup
-
-	props:
-		establishments:
-			required: true
-			type: Array
+		"display-config": DisplayConfig
+		"zoom-config": ZoomConfig
+		"color-config": ColorConfig
+		"viewer-data-loader": ViewerDataLoader
 
 	data: () ->
 		lmap: null
-		pollutant: "NOx"
+		mapInitialized: false # A flag to determine if we sould fly to bounds again
+		boundingBox: null
 		pollutionPeeks: {}
+		establishments: []
 		selectedEstablishment: null
 		tiles: {}
 		selectedTile: null
 
 	methods:
 		buildMap: () ->
-			this.lmap = L.map('lez-map').setView([0, 0], 1)
+			this.lmap = L.map('viewer-map').setView([0, 0], 1)
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(this.lmap)
 
 			L.control.scale().addTo(this.lmap)
 
-		displayEstablishments: () ->
+		handleDataLoaded: (data) ->
+			this.clear()
+			this.buildEstablishments(data.establishments)
+			this.buildTiles(data.tiles)
+
+		buildEstablishments: (establishments) ->
 			self = this
-			for establishment in this.establishments
+			for establishment in establishments
 				do (establishment) ->
 					circle = L.circle(establishment.location).addTo(self.lmap)
 					if Object.keys(establishment.rounds).length
@@ -63,69 +96,86 @@ export default
 							color: "red"
 							)
 					establishment.mapObject = circle
+					self.establishments.push(establishment)
 			this.selectedEstablishment = self.establishments[0].mapObject
 
 
-		fetchTiles: () ->
-			url = "tiles/no_lez_tiles_1000.json"
+		buildTiles: (tiles) ->
 			self = this
+			self.boundingBox = L.rectangle(tiles.bounds)
+			self.boundingBox.setStyle(
+				fill: false
+				color: "black"
+				)
+			self.boundingBox.addTo(self.lmap)
 
-			fetch(url)
-			.catch((error) ->
-				console.log error
-			)
-			.then((response) ->
-				response.json()
-			)
-			.then((json) ->
-				console.log json.tiles
-				self.tiles = json.tiles
+			if !this.mapInitialized
+				this.mapInitialized = true
+				self.lmap.flyToBounds(tiles.bounds)
 
-				simulatedZone = L.rectangle(json.bounds)
-				simulatedZone.setStyle(
-					fill: false
-					color: "black"
-					)
-				simulatedZone.addTo(self.lmap)
+			for pollutant, peek of tiles.pollutionPeeks
+				do (pollutant, peek) ->
+					self.$set(self.pollutionPeeks, pollutant, peek)
 
-				self.lmap.flyToBounds(json.bounds)
+			for lineIndex, tileLine of tiles.tiles
+				do (lineIndex, tileLine) ->
+					self.$set(self.tiles, lineIndex, {})
+					for columnIndex, tile of tileLine
+						do (columnIndex, tile) ->
+							lRectangle = L.rectangle(tile.bounds)
+								.addTo(self.lmap)
 
-				self.pollutionPeeks = json.pollutionPeeks
+							lRectangle.on(
+								click: () -> self.selectedTile = tile
+							)
+							tile.mapObject = lRectangle
+							self.$set(self.tiles[lineIndex], columnIndex, tile)
 
-				for tileLine in Object.values(json.tiles)
-					do (tileLine) ->
-						for tile in Object.values(tileLine)
-							do (tile) ->
-								lRectangle = L.rectangle(tile.bounds)
-									.addTo(self.lmap)
+			self.$refs.colorConfig.updateTilesColors()
+			# )
+		clear: () ->
+			if this.boundingBox
+				this.boundingBox.remove()
+				this.boundingBox = null
 
-								lRectangle.setStyle(
-									stroke: false
-									fillColor: linearHueGradient(200, 0, Math.min(1, tile.pollution[self.pollutant] / self.pollutionPeeks[self.pollutant]))
-									fillOpacity: 0.5
-									)
-								lRectangle.on(
-									click: () -> self.selectedTile = tile
-								)
-								tile.lRectangle = lRectangle
-			)
+			# this.pollutionPeeks = {}
+			establishment.mapObject.remove() for establishment in this.establishments
+			this.establishments = []
+
+			for tileLine in Object.values(this.tiles)
+				do (tileLine) ->
+					for tile in Object.values(tileLine)
+						do (tile) ->
+							tile.mapObject.remove()
+			# this.tiles = {}
+			this.selectedEstablishment = null
+			this.selectedTile = null
+			this.$refs.displayConfig.refresh()
 
 
 	mounted: () ->
 		this.buildMap()
-		this.fetchTiles()
+		# this.fetchTiles()
 
 </script>
 
 <style>
+#viewer-container {
+	height: 100%;
+}
+
+#viewer-toolbar {
+	height: 100%;
+}
+
 #viewer-map-container {
-	width: 100%;
+	width: 75%;
 	height: 100%;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-#lez-map {
+#viewer-map {
 	width: 100%;
 	height: 100%;
 }

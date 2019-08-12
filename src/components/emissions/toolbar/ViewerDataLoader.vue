@@ -1,0 +1,60 @@
+<template>
+	<div class="w3-container">
+	
+		<data-loader
+			ref="establishmentsLoader"
+			label="Establishments"
+			v-on:loaded="handleEstablishmentsLoaded"
+			/>
+		<data-loader
+			ref="tilesLoader"
+			label="Tiles"
+			v-on:loaded="handleTilesLoaded"
+			/>
+
+		<button
+			class="w3-green w3-button w3-round"
+			v-on:click="load"
+			>
+			<i class="fa fa-upload fa-lg"></i>
+			Load data
+		</button>
+	</div>
+
+</template>
+
+<script lang="coffee">
+	
+	import DataLoader from "../../loader/DataLoader.vue"
+
+	export default
+
+		components:
+			"data-loader": DataLoader
+		
+		data: () ->
+			establishmentsFile: null
+			tilesFile: null
+			establishmentsLoaded: false
+			tilesLoaded: false
+			loadedData: {}
+
+		methods:
+			load: () ->
+				this.$refs.establishmentsLoader.load()
+				this.$refs.tilesLoader.load()
+
+			handleEstablishmentsLoaded: (data) ->
+				this.establishmentsLoaded = true
+				this.loadedData.establishments = data
+				if this.tilesLoaded
+					this.$emit("loaded", this.loadedData)
+
+			handleTilesLoaded: (data) ->
+				this.tilesLoaded = true
+				this.loadedData.tiles = data
+				if this.establishmentsLoaded
+					this.$emit("loaded", this.loadedData)
+
+
+</script>

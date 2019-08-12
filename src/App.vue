@@ -72,7 +72,7 @@ export default
 		selectViewer: () ->
 			this.selectedTab = "viewer"
 			this.$nextTick(() ->
-				this.$refs.viewer.displayEstablishments()
+			#	this.$refs.viewer.displayEstablishments()
 				)
 	
 	mounted: () ->
