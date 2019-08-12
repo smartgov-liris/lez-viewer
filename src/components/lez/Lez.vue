@@ -35,9 +35,25 @@
 
 			
 			<h3 class="w3-margin-top"> Download </h3>
-			<button class="w3-green w3-button w3-round">
+			<button
+				class="w3-green w3-button w3-round"
+				v-on:click="downloadJson">
 				<i class="fa fa-download fa-lg"></i>
 				Download JSON
+			</button>
+
+			<h3 class="w3-margin-top"> Import </h3>
+			<input
+				type="file"
+				class="w3-input w3-border-0"
+				v-on:change="fileToImport = $event.target.files[0]"
+				/>
+			<button
+				class="w3-green w3-button w3-round"
+				v-bind:disabled="!fileToImport"
+				v-on:click="loadJson">
+				<i class="fa fa-upload fa-lg"></i>
+				Load JSON
 			</button>
 
 		</div>
@@ -53,6 +69,7 @@
 <script lang="coffee">
 
 import L from "leaflet"
+import download from "downloadjs"
 import "leaflet/dist/leaflet.css"
 
 redIcon = L.icon({
@@ -67,6 +84,15 @@ critairEnum =
 	critair3: "CRITAIR_3"
 	critair4: "CRITAIR_4"
 	critair5: "CRITAIR_5"
+
+critairEnumReversed =
+	"CRITAIR_1" : "critair1"
+	"CRITAIR_2" : "critair2"
+	"CRITAIR_3" : "critair3"
+	"CRITAIR_4" : "critair4"
+	"CRITAIR_5" : "critair5"
+
+console.log download
 
 export default
 
@@ -90,6 +116,7 @@ export default
 			critair4: "CRIT'air 4"
 			critair5: "CRIT'air 5"
 		allowed: []
+		fileToImport: null
 
 	methods:
 		buildMap: () ->
@@ -138,13 +165,6 @@ export default
 				this.closeLine.addTo(this.lmap)
 
 			self = this
-
-			closeLineMoveHandler = (event) ->
-				self.closeLine.setLatLngs([
-					event.latlng,
-					self.closeLine.getLatLngs()[1]
-					])
-
 			this.lmap.on("keydown", (event) ->
 				if event.originalEvent.code == "ControlLeft"
 					self.ctrlDown = true
@@ -156,64 +176,75 @@ export default
 
 			this.lmap.on("click", (event) ->
 				if self.ctrlDown
-					point = L.marker(
-						event.latlng,
-						icon: redIcon
-						draggable: true
-						autoPan: true
-					)
-					point.addTo(self.lmap)
-					self.points.push(point)
-
-
-					if self.points.length > 1
-						startPoint = self.points[self.points.length - 2]
-						line = L.polyline([
-							startPoint.getLatLng(),
-							point.getLatLng()
-							])
-						line.addTo(self.lmap)
-						self.lines.push(line)
-
-						point.on("move", (event) ->
-							line.setLatLngs([
-									line.getLatLngs()[0]
-									event.latlng
-								])
-							)
-
-						startPoint.on("move", (event) ->
-							line.setLatLngs([
-									event.latlng
-									line.getLatLngs()[1]
-								])
-							)
-
-					if self.points.length == 3
-						self.closeLine = L.polyline([
-							self.points[2].getLatLng(),
-							self.points[0].getLatLng(),
-							]).addTo(self.lmap)
-
-						self.points[0].on("move", (event) ->
-								self.closeLine.setLatLngs([
-									self.closeLine.getLatLngs()[0],
-									event.latlng
-								])
-							)
-						self.points[2].on("move", closeLineMoveHandler)
-
-					if self.points.length > 3
-						self.closeLine.setLatLngs([
-							self.points[self.points.length - 1].getLatLng(),
-							self.points[0].getLatLng()
-							])
-
-						self.points[self.points.length - 2].off("move", closeLineMoveHandler)
-						self.points[self.points.length - 1].on("move", closeLineMoveHandler)
-
-
+					self.buildPoint(event.latlng)
 				)
+
+		closeLineMoveHandler: (event) ->
+			this.closeLine.setLatLngs([
+				event.latlng,
+				this.closeLine.getLatLngs()[1]
+			])
+
+		buildPoint: (coordinates) ->
+				point = L.marker(
+					coordinates,
+					icon: redIcon
+					draggable: true
+					autoPan: true
+				)
+				point.addTo(this.lmap)
+				this.points.push(point)
+
+
+				if this.points.length > 1
+					startPoint = this.points[this.points.length - 2]
+					line = L.polyline([
+						startPoint.getLatLng(),
+						point.getLatLng()
+						])
+					line.addTo(this.lmap)
+					this.lines.push(line)
+
+					point.on("move", (event) ->
+						line.setLatLngs([
+								line.getLatLngs()[0]
+								event.latlng
+							])
+						)
+
+					startPoint.on("move", (event) ->
+						line.setLatLngs([
+								event.latlng
+								line.getLatLngs()[1]
+							])
+						)
+
+				if this.points.length == 3
+					this.closeLine = L.polyline([
+						this.points[2].getLatLng(),
+						this.points[0].getLatLng(),
+						]).addTo(this.lmap)
+
+					self = this
+					this.points[0].on("move", (event) ->
+							self.closeLine.setLatLngs([
+								self.closeLine.getLatLngs()[0],
+								event.latlng
+							])
+						)
+					this.points[2].on("move", this.closeLineMoveHandler)
+
+				if this.points.length > 3
+					this.closeLine.setLatLngs([
+						this.points[this.points.length - 1].getLatLng(),
+						this.points[0].getLatLng()
+						])
+
+					this.points[this.points.length - 2].off("move", this.closeLineMoveHandler)
+					this.points[this.points.length - 1].on("move", this.closeLineMoveHandler)
+
+
+
 		viewMode: () ->
 			this.lmap.off("keydown")
 			this.lmap.off("keyup")
@@ -245,6 +276,37 @@ export default
 
 			if this.polygon
 				this.polygon.remove()
+
+		downloadJson: () ->
+			lez =
+				perimeter: []
+				allowed: []
+
+			lez.perimeter.push([point.getLatLng().lat, point.getLatLng().lng]) for point in this.points
+			lez.allowed.push(critairEnum[critair]) for critair in this.allowed
+
+			download(JSON.stringify(lez, null, "\t"), "lez.json", "application/json")
+
+		loadJson: () ->
+			this.clear()
+
+			self = this
+			reader = new FileReader()
+			reader.onload = () ->
+				lez = JSON.parse(reader.result)
+				for coordinates in lez.perimeter
+					do (coordinates) ->
+						self.buildPoint(L.latLng(coordinates[0], coordinates[1]))
+
+				self.allowed = []
+				for critair in lez.allowed
+					do (critair) ->
+						self.allowed.push(critairEnumReversed[critair])
+
+				self.buildMode()
+
+			reader.readAsText(this.fileToImport)
+
 
 
 	

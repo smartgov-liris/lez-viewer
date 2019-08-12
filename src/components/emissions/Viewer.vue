@@ -16,6 +16,12 @@ import "leaflet/dist/leaflet.css"
 
 import TilePopup from "./map/TilePopup"
 
+###
+value in [0, 1]
+###
+linearHueGradient = (min, max, value) ->
+	"hsl(#{min + value * (max - min)},100%,50%)"
+
 export default
 
 	components:
@@ -37,7 +43,6 @@ export default
 	methods:
 		buildMap: () ->
 			this.lmap = L.map('lez-map').setView([0, 0], 1)
-			console.log this.lmap
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(this.lmap)
@@ -62,7 +67,7 @@ export default
 
 
 		fetchTiles: () ->
-			url = "tiles/tiles.json"
+			url = "tiles/no_lez_tiles_1000.json"
 			self = this
 
 			fetch(url)
@@ -75,6 +80,13 @@ export default
 			.then((json) ->
 				console.log json.tiles
 				self.tiles = json.tiles
+
+				simulatedZone = L.rectangle(json.bounds)
+				simulatedZone.setStyle(
+					fill: false
+					color: "black"
+					)
+				simulatedZone.addTo(self.lmap)
 
 				self.lmap.flyToBounds(json.bounds)
 
@@ -89,15 +101,12 @@ export default
 
 								lRectangle.setStyle(
 									stroke: false
-									fillColor: "blue"
-									fillOpacity: tile.pollution[self.pollutant] / self.pollutionPeeks[self.pollutant]
+									fillColor: linearHueGradient(200, 0, Math.min(1, tile.pollution[self.pollutant] / self.pollutionPeeks[self.pollutant]))
+									fillOpacity: 0.5
 									)
-								if !tile.pollution[self.pollutant]
-									if !(tile.pollution[self.pollutant] == 0)
-										console.log tile
-								lRectangle.on({
+								lRectangle.on(
 									click: () -> self.selectedTile = tile
-								})
+								)
 								tile.lRectangle = lRectangle
 			)
 

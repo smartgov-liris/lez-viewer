@@ -5,8 +5,18 @@
 				<h1> LEZ viewer </h1>
 			</div>
 			<div class="w3-bar w3-light-grey">
-				<button class="w3-bar-item w3-button">Lez</button>
-				<button class="w3-bar-item w3-button">Emissions</button>
+				<button
+					class="w3-bar-item w3-button"
+					v-on:click="selectLez"
+					>
+					Lez
+				</button>
+				<button
+					class="w3-bar-item w3-button"
+					v-on:click="selectViewer"
+					>
+					Emissions
+				</button>
 			</div>
 		</div>
 		<div id="main_body" class="w3-container">
