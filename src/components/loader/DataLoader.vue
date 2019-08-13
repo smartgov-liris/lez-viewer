@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<label> {{label}} : </label>
+		<label v-if="label"> {{label}} : </label>
 		<input
 			type="file"
 			class="w3-input w3-border-0"
-			v-on:change="file = $event.target.files[0]"
+			v-on:change="handleChange($event.target.files[0])"
 			/>
 	</div>
 </template>
@@ -16,13 +16,16 @@
 		props:
 			label:
 				type: String
-				required: true
 
 		data: () ->
 			loadedData: {}
 			file: null
 
 		methods:
+			handleChange: (file) ->
+				this.file = file
+				this.$emit("select", file)
+
 			load: () ->
 				self = this
 				reader = new FileReader()
