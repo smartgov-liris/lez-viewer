@@ -1,6 +1,5 @@
 <template>
-	<div class="w3-container">
-	
+	<div class="w3-margin">
 		<data-loader
 			ref="establishmentsLoader"
 			label="Establishments"
@@ -33,8 +32,6 @@
 			"data-loader": DataLoader
 		
 		data: () ->
-			establishmentsFile: null
-			tilesFile: null
 			establishmentsLoaded: false
 			tilesLoaded: false
 			loadedData: {}
@@ -55,6 +52,14 @@
 				this.loadedData.tiles = data
 				if this.establishmentsLoaded
 					this.$emit("loaded", this.loadedData)
+
+			getTilesFile: () ->
+				this.$refs.tilesLoader.getFile()
+
+			getEstablishmentsFile: () ->
+				this.$refs.establishmentsLoader.getFile()
+
+
 
 
 </script>

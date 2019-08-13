@@ -1,5 +1,5 @@
 <template>
-	<div class="w3-container">
+	<div class="w3-margin">
 		<p>
 		<input class="w3-check" type="checkbox" v-model="display.boundingBox" v-on:change="handleBoxDisplay($event.target.checked)">
 		<label> Bounding Box </label>

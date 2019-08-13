@@ -19,7 +19,7 @@
 				</button>
 			</div>
 		</div>
-		<div id="main_body" class="w3-container">
+		<div id="main_body">
 			<lez v-if="selectedTab == 'lez'" :establishments="establishments" ref="lez"/>
 			<viewer v-if="selectedTab == 'viewer'" :establishments="establishments" ref="viewer"/>
 		</div>

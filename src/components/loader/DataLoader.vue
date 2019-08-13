@@ -33,7 +33,11 @@
 					self.loadedData = JSON.parse(reader.result)
 					self.$emit("loaded", self.loadedData)
 
+				console.log this.file
 				reader.readAsText(this.file)
+
+			getFile: () ->
+				this.file
 
 
 

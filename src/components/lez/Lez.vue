@@ -2,26 +2,31 @@
 
 	<div id="lez-container" class="w3-cell-row">
 		<div id="lez-toolbar" class="w3-cell w3-cell-top">
-			<h3>Perimiter</h3>
+			<accordion label="Perimiter" expand>
 			<perimeter
+				class="w3-margin"
 				ref="perimeter"
 				v-bind:lmap="lmap"
 				/>
+			</accordion>
 
-			<h3> Allowed vehicles </h3>
+			<accordion label="Allowed vehicles" expand>
 			<crit-air
 				ref="critAir"
 				/>
+			</accordion>
 			
-			<h3 class="w3-margin-top"> Download </h3>
+			<accordion label="Download" expand>
 			<button
-				class="w3-green w3-button w3-round"
+				class="w3-green w3-button w3-round w3-margin"
 				v-on:click="downloadJson">
 				<i class="fa fa-download fa-lg"></i>
 				Download JSON
 			</button>
+			</accordion>
 
-			<h3 class="w3-margin-top"> Import </h3>
+			<accordion label="Import" expand>
+			<div class="w3-margin">
 			<data-loader
 				ref="lezLoader"
 				v-on:select="lezFileReady = true"
@@ -35,6 +40,8 @@
 				<i class="fa fa-upload fa-lg"></i>
 				Load JSON
 			</button>
+			</div>
+			</accordion>
 
 		</div>
 		<div id="lez-map-container" class="w3-cell">
@@ -55,6 +62,7 @@ import "leaflet/dist/leaflet.css"
 import Perimeter from "./toolbar/Perimeter"
 import CritAir from "./toolbar/CritAir"
 import DataLoader from "../loader/DataLoader"
+import Accordion from "../utils/Accordion"
 
 export default
 
@@ -62,6 +70,7 @@ export default
 		"perimeter": Perimeter
 		"crit-air": CritAir
 		"data-loader": DataLoader
+		"accordion": Accordion
 
 	props:
 		establishments:

@@ -1,31 +1,38 @@
 <template>
 	<div id="viewer-container" class="w3-cell-row">
 		<div id="viewer-toolbar" class="w3-cell w3-cell-top">
-			<h3 class="w3-margin-top"> Data </h3>
-			<viewer-data-loader
-				v-on:loaded="handleDataLoaded"
-				/>
+			<accordion label="Data" expand>
+				<viewer-data-loader
+					ref="dataLoader"
+					class="w3-container"
+					v-on:loaded="handleDataLoaded"
+					/>
+			</accordion>
 
-			<h3> Display </h3>
+			<accordion label="Display">
 			<display-config
 				ref="displayConfig"
 				v-bind:lmap="lmap"
 				v-bind:boundingBox="boundingBox"
 				v-bind:establishments="establishments"
 				v-bind:tiles="tiles"/>
+			</accordion>
 
-			<h3> Zoom </h3>
+			<accordion label="Zoom">
 			<zoom-config
 				v-bind:lmap="lmap"
 				/>
+			</accordion>
 
-			<h3> Color </h3>
-			<color-config
+			<accordion label="Tiles" expand>
+			<tiles-config
 				ref="colorConfig"
 				v-bind:lmap="lmap"
 				v-bind:tiles="tiles"
 				v-bind:pollutionPeeks="pollutionPeeks"
 				/>
+			</accordion>
+
 		</div>
 		<div id="viewer-map-container" class="w3-cell">
 			<div id="viewer-map"/>
@@ -45,8 +52,9 @@ import "leaflet/dist/leaflet.css"
 import TilePopup from "./map/TilePopup"
 import DisplayConfig from "./toolbar/DisplayConfig"
 import ZoomConfig from "./toolbar/ZoomConfig"
-import ColorConfig from "./toolbar/ColorConfig"
+import TilesConfig from "./toolbar/TilesConfig"
 import ViewerDataLoader from "./toolbar/ViewerDataLoader"
+import Accordion from "../utils/Accordion"
 
 
 export default
@@ -55,8 +63,9 @@ export default
 		"tile-popup": TilePopup
 		"display-config": DisplayConfig
 		"zoom-config": ZoomConfig
-		"color-config": ColorConfig
+		"tiles-config": TilesConfig
 		"viewer-data-loader": ViewerDataLoader
+		"accordion": Accordion
 
 	data: () ->
 		lmap: null
@@ -113,9 +122,11 @@ export default
 				this.mapInitialized = true
 				self.lmap.flyToBounds(tiles.bounds)
 
+			fileName = self.$refs.dataLoader.getTilesFile().name
+			self.$set(self.pollutionPeeks, fileName, {})
 			for pollutant, peek of tiles.pollutionPeeks
 				do (pollutant, peek) ->
-					self.$set(self.pollutionPeeks, pollutant, peek)
+					self.$set(self.pollutionPeeks[fileName], pollutant, peek)
 
 			for lineIndex, tileLine of tiles.tiles
 				do (lineIndex, tileLine) ->
@@ -132,13 +143,12 @@ export default
 							self.$set(self.tiles[lineIndex], columnIndex, tile)
 
 			self.$refs.colorConfig.updateTilesColors()
-			# )
+
 		clear: () ->
 			if this.boundingBox
 				this.boundingBox.remove()
 				this.boundingBox = null
 
-			# this.pollutionPeeks = {}
 			establishment.mapObject.remove() for establishment in this.establishments
 			this.establishments = []
 
@@ -147,7 +157,6 @@ export default
 					for tile in Object.values(tileLine)
 						do (tile) ->
 							tile.mapObject.remove()
-			# this.tiles = {}
 			this.selectedEstablishment = null
 			this.selectedTile = null
 			this.$refs.displayConfig.refresh()
@@ -155,7 +164,6 @@ export default
 
 	mounted: () ->
 		this.buildMap()
-		# this.fetchTiles()
 
 </script>
 

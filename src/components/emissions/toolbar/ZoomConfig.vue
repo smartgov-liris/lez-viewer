@@ -1,5 +1,5 @@
 <template>
-	<div class="w3-container">
+	<div class="w3-margin">
 		<label> Latitude </label>
 		<input class="w3-input" type="number" step="0.1" v-bind:value="center.lat" v-on:input="updateLat($event.target.value)"/>
 		<label> Longitude </label>
