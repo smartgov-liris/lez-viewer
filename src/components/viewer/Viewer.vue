@@ -32,6 +32,15 @@
 				v-bind:pollutionPeeks="pollutionPeeks"
 				/>
 			</accordion>
+			<accordion label="Example">
+			<button
+				class="w3-button w3-margin w3-blue w3-round w3-large"
+				v-on:click="loadExample"
+				>
+				<i class="fas fa-cloud-download-alt"></i>
+				Load example
+			</button>
+			</accordion>
 
 		</div>
 		<div id="viewer-map-container" class="w3-cell">
@@ -96,7 +105,7 @@ export default
 
 		handleDataLoaded: (data) ->
 			this.clear()
-			this.buildTiles(data.tiles)
+			this.buildTiles(data.tiles, this.$refs.dataLoader.getTilesFile().name)
 			this.buildEstablishments(data.establishments)
 
 		buildEstablishments: (establishments) ->
@@ -120,7 +129,7 @@ export default
 					self.$set(self.establishments, establishment.id, establishment)
 
 
-		buildTiles: (tiles) ->
+		buildTiles: (tiles, fileName) ->
 			self = this
 			self.boundingBox = L.rectangle(tiles.bounds)
 			self.boundingBox.setStyle(
@@ -133,7 +142,6 @@ export default
 				this.mapInitialized = true
 				self.lmap.flyToBounds(tiles.bounds)
 
-			fileName = self.$refs.dataLoader.getTilesFile().name
 			self.$set(self.pollutionPeeks, fileName, {})
 			for pollutant, peek of tiles.pollutionPeeks
 				do (pollutant, peek) ->
@@ -170,6 +178,40 @@ export default
 			this.selectedEstablishment = null
 			this.selectedTile = null
 			this.$refs.displayConfig.refresh()
+
+		loadExample: () ->
+			exampleData = {}
+			self = this
+			# Establishments example
+			fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/establishments/establishments.json")
+			.catch((error) ->
+				console.log error
+			)
+			.then((response) ->
+				response.json()
+			)
+			.then((json) ->
+				exampleData.establishments = json
+			)
+			.then(() ->
+				# Tiles example
+				fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/tiles/tiles.json")
+				.catch((error) ->
+					console.log error
+				)
+				.then((response) ->
+					response.json()
+				)
+				.then((json) ->
+					exampleData.tiles = json
+				)
+				.then(() ->
+					self.clear()
+					self.buildTiles(exampleData.tiles, "tiles.json")
+					self.buildEstablishments(exampleData.establishments)
+				)
+			)
+
 
 
 	mounted: () ->

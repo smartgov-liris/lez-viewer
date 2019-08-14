@@ -36,7 +36,7 @@
 </template>
 
 <script lang="coffee">
-import Viewer from './components/emissions/Viewer.vue'
+import Viewer from './components/viewer/Viewer.vue'
 import Lez from './components/lez/Lez.vue'
 
 export default

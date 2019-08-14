@@ -97,7 +97,7 @@ import Perimeter from "./toolbar/Perimeter"
 import CritAir from "./toolbar/CritAir"
 import DataLoader from "../loader/DataLoader"
 import Accordion from "../utils/Accordion"
-import EstablishmentPopup from "../emissions/map/EstablishmentPopup"
+import EstablishmentPopup from "../viewer/map/EstablishmentPopup"
 
 export default
 
