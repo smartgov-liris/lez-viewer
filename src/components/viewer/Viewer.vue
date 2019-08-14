@@ -36,10 +36,17 @@
 			<div class="w3-container">
 				<button
 					class="w3-button w3-block w3-margin-top w3-blue w3-round w3-large"
-					v-on:click="loadExample"
+					v-on:click="loadExample('no_lez_tiles.json')"
 					>
 					<i class="fas fa-cloud-download-alt"></i>
-					Load example
+					Load example (without LEZ)
+				</button>
+				<button
+					class="w3-button w3-block w3-margin-top w3-blue w3-round w3-large"
+					v-on:click="loadExample('lez_tiles.json')"
+					>
+					<i class="fas fa-cloud-download-alt"></i>
+					Load example (with LEZ)
 				</button>
 				<a
 					class="w3-button w3-block w3-margin-top w3-round w3-large w3-light-blue"
@@ -187,7 +194,7 @@ export default
 			this.selectedTile = null
 			this.$refs.displayConfig.refresh()
 
-		loadExample: () ->
+		loadExample: (tileFile) ->
 			exampleData = {}
 			self = this
 			# Establishments example
@@ -203,7 +210,7 @@ export default
 			)
 			.then(() ->
 				# Tiles example
-				fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/tiles/tiles.json")
+				fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/tiles/#{tileFile}")
 				.catch((error) ->
 					console.log error
 				)
@@ -215,7 +222,7 @@ export default
 				)
 				.then(() ->
 					self.clear()
-					self.buildTiles(exampleData.tiles, "tiles.json")
+					self.buildTiles(exampleData.tiles, tileFile)
 					self.buildEstablishments(exampleData.establishments)
 				)
 			)
