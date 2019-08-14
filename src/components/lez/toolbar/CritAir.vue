@@ -1,5 +1,5 @@
 <template>
-	<div class="w3-container">
+	<div class="w3-margin">
 		<div v-for="(label, critair) in critairs">
 			<input class="w3-check" type="checkbox" v-bind:value="critair" v-model="allowed">
 			<label> {{label}} </label>
