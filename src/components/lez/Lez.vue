@@ -23,7 +23,7 @@
 			</div>
 
 			</accordion>
-			<accordion label="Perimiter" expand>
+			<accordion label="Tools" expand>
 			<perimeter
 				class="w3-margin"
 				ref="perimeter"
@@ -62,6 +62,15 @@
 				Load JSON
 			</button>
 			</div>
+			</accordion>
+			<accordion label="Example">
+			<button
+				class="w3-button w3-margin w3-blue w3-round w3-large"
+				v-on:click="loadExample"
+				>
+				<i class="fas fa-cloud-download-alt"></i>
+				Load example
+			</button>
 			</accordion>
 
 		</div>
@@ -196,6 +205,34 @@ export default
 				for _, establishment of this.establishments
 					do (_, establishment) ->
 						establishment.mapObject.remove()
+
+		loadExample: () ->
+			self = this
+
+			# LEZ example
+			fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/lez/lez.json")
+			.catch((error) ->
+				console.log error
+			)
+			.then((response) ->
+				response.json()
+			)
+			.then((json) ->
+				self.handleLoadedLez(json)
+			)
+
+			# Establishments example
+			fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/establishments/establishments.json")
+			.catch((error) ->
+				console.log error
+			)
+			.then((response) ->
+				response.json()
+			)
+			.then((json) ->
+				self.handleLoadedEstablishments(json)
+			)
+
 
 
 	
