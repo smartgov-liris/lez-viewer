@@ -191,11 +191,13 @@
 			getPoints: () ->
 				this.points
 
+		###
 		mounted: () ->
 			self = this
 			this.$nextTick(() ->
 				self.buildMode()
 				)
+		###
 
 
 </script>

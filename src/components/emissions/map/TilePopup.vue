@@ -2,7 +2,7 @@
 	<div v-show="false" ref="popupBody">
 		<ul>
 			<li v-for="pollutant in pollutants">
-				{{pollutant}} : {{tile.pollution[pollutant]}}
+				{{pollutant}} : {{tile.pollution[pollutant]}} g/s/m2
 			</li>
 		</ul>
 	</div>
@@ -18,12 +18,13 @@
 				required: true
 
 		data: () ->
-			pollutants: ["NO2", "NOx", "NH3", "VOC", "PM", "CH4", "CO", "FC"]
+			pollutants: ["N2O", "NOx", "NH3", "VOC", "PM", "CH4", "CO", "FC"]
 
-		watch:
-			tile: (newTile, oldTile) ->
-				console.log newTile
-				console.log self.tile
-				newTile.lRectangle.bindPopup(this.$refs.popupBody.innerHTML).openPopup()
-				self.tile = newTile
+		mounted: () ->
+			this.$watch(
+				"tile", (newTile, oldTile) ->
+					newTile.mapObject.bindPopup(this.$refs.popupBody.innerHTML).openPopup()
+				, immediate: true
+				)
+
 </script>

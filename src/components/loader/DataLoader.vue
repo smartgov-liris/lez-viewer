@@ -3,6 +3,7 @@
 		<label v-if="label"> {{label}} : </label>
 		<input
 			type="file"
+			accept="application/json"
 			class="w3-input w3-border-0"
 			v-on:change="handleChange($event.target.files[0])"
 			/>

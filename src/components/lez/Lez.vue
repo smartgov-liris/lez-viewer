@@ -1,7 +1,28 @@
 <template>
-
 	<div id="lez-container" class="w3-cell-row">
 		<div id="lez-toolbar" class="w3-cell w3-cell-top">
+			<accordion label="Data">
+			<div class="w3-margin">
+			<data-loader
+				ref="establishmentsLoader"
+				label="Establishments"
+				v-on:select="establishmentsFileReady = true"
+				v-on:loaded="handleLoadedEstablishments"
+				/>
+			<button
+				class="w3-green w3-button w3-round"
+				v-bind:disabled="!establishmentsFileReady"
+				v-on:click="loadEstablishments">
+				<i class="fa fa-upload fa-lg"></i>
+				Load JSON
+			</button>
+			<p>
+			<input type="checkbox" class="w3-check" v-model="displayEstablishments" v-on:change="handleEstablishmentsDisplay"/>
+			<label>Display establishments</label>
+			</p>
+			</div>
+
+			</accordion>
 			<accordion label="Perimiter" expand>
 			<perimeter
 				class="w3-margin"
@@ -46,11 +67,15 @@
 		</div>
 		<div id="lez-map-container" class="w3-cell">
 			<div id="lez-map"/>
+			<establishment-popup
+				v-if="selectedEstablishment"
+				v-bind:lmap="lmap"
+				v-bind:establishment="selectedEstablishment"
+				v-bind:establishments="establishments"
+				/>
+
 		</div>
 	</div>
-
-
-
 </template>
 
 <script lang="coffee">
@@ -63,6 +88,7 @@ import Perimeter from "./toolbar/Perimeter"
 import CritAir from "./toolbar/CritAir"
 import DataLoader from "../loader/DataLoader"
 import Accordion from "../utils/Accordion"
+import EstablishmentPopup from "../emissions/map/EstablishmentPopup"
 
 export default
 
@@ -71,15 +97,15 @@ export default
 		"crit-air": CritAir
 		"data-loader": DataLoader
 		"accordion": Accordion
-
-	props:
-		establishments:
-			required: true
-			type: Array
+		"establishment-popup": EstablishmentPopup
 	
 	data: () ->
 		lmap: null
 		lezFileReady: false
+		establishmentsFileReady: false
+		establishments: {}
+		selectedEstablishment: null
+		displayEstablishments: true
 
 	methods:
 		buildMap: () ->
@@ -91,26 +117,25 @@ export default
 
 			L.control.scale().addTo(this.lmap)
 
-		centerMap: () ->
+		centerMap: (coordinates) ->
 			topLeft = [-Infinity, Infinity]
 			bottomRight = [Infinity, -Infinity]
 
-			for establishment in this.establishments
-				do (establishment) ->
-					if establishment.location[0] > topLeft[0]
-						topLeft[0] = establishment.location[0]
+			for coordinate in coordinates
+				do (coordinate) ->
+					if coordinate[0] > topLeft[0]
+						topLeft[0] = coordinate[0]
 
-					if establishment.location[1] < topLeft[1]
-						topLeft[1] = establishment.location[1]
+					if coordinate[1] < topLeft[1]
+						topLeft[1] = coordinate[1]
 
-					if establishment.location[0] < bottomRight[0]
-						bottomRight[0] = establishment.location[0]
+					if coordinate[0] < bottomRight[0]
+						bottomRight[0] = coordinate[0]
 
-					if establishment.location[1] > bottomRight[1]
-						bottomRight[1] = establishment.location[1]
+					if coordinate[1] > bottomRight[1]
+						bottomRight[1] = coordinate[1]
 
-			console.log topLeft
-			console.log bottomRight
+			console.log "Computed bounds : #{topLeft} #{bottomRight}"
 			this.lmap.fitBounds([topLeft, bottomRight])
 
 		downloadJson: () ->
@@ -127,12 +152,58 @@ export default
 		loadLez: () ->
 			this.$refs.lezLoader.load()
 
+		loadEstablishments: () ->
+			this.$refs.establishmentsLoader.load()
+
 		handleLoadedLez: (lez) ->
 			this.$refs.perimeter.load(lez.perimeter)
 			this.$refs.critAir.load(lez.allowed)
+			this.centerMap(lez.perimeter)
+
+		handleLoadedEstablishments: (establishments) ->
+			self = this
+			establishmentsCoordinates = []
+			for establishment in establishments
+				do (establishment) ->
+					circle = L.circle(establishment.location)
+					if Object.keys(establishment.rounds).length
+						circle.setStyle(
+							color: "black"
+							)
+					else
+						circle.setStyle(
+							color: "red"
+							)
+					circle.on(
+						click: () ->
+							self.selectedEstablishment = establishment
+						)
+					establishment.mapObject = circle
+					self.$set(self.establishments, establishment.id, establishment)
+
+					establishmentsCoordinates.push(establishment.location)
+					
+			this.handleEstablishmentsDisplay()
+			this.centerMap(establishmentsCoordinates)
+
+		handleEstablishmentsDisplay: () ->
+			if this.displayEstablishments
+				self = this
+				for _, establishment of this.establishments
+					do (_, establishment) ->
+						establishment.mapObject.addTo(self.lmap)
+			else
+				for _, establishment of this.establishments
+					do (_, establishment) ->
+						establishment.mapObject.remove()
+
+
 	
 	mounted: () ->
 		this.buildMap()
+		this.$nextTick(() ->
+			this.$refs.perimeter.buildMode()
+			)
 
 </script>
 

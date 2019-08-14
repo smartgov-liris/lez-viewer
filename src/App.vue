@@ -20,8 +20,10 @@
 			</div>
 		</div>
 		<div id="main_body">
-			<lez v-if="selectedTab == 'lez'" :establishments="establishments" ref="lez"/>
-			<viewer v-if="selectedTab == 'viewer'" :establishments="establishments" ref="viewer"/>
+			<keep-alive>
+			<lez v-if="selectedTab == 'lez'" ref="lez"/>
+			<viewer v-if="selectedTab == 'viewer'" ref="viewer"/>
+			</keep-alive>
 		</div>
 	</div>
 </template>
@@ -37,47 +39,14 @@ export default
 		viewer: Viewer
 	
 	data: () ->
-		selectedTab: ""
-		establishments: []
+		selectedTab: "lez"
 
 	methods:
-		fetchEstablishments: () ->
-			url = "establishments/establishments.json"
-			self = this
-			
-			fetch(url)
-			.catch((error) ->
-				console.log error
-			)
-			.then((response) ->
-				response.json()
-			)
-			.then((json) ->
-				# self.establishments = json
-
-				for establishment in json
-					do (establishment) ->
-						self.establishments.push(establishment)
-				)
-			.then(() ->
-				self.selectLez()
-				)
-
 		selectLez: () ->
 			this.selectedTab = "lez"
-			this.$nextTick(() ->
-				this.$refs.lez.centerMap()
-				)
 
 		selectViewer: () ->
 			this.selectedTab = "viewer"
-			this.$nextTick(() ->
-			#	this.$refs.viewer.displayEstablishments()
-				)
-	
-	mounted: () ->
-		this.fetchEstablishments()
-
 
 </script>
 

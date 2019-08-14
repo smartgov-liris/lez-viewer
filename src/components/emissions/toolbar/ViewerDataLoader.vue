@@ -3,17 +3,20 @@
 		<data-loader
 			ref="establishmentsLoader"
 			label="Establishments"
+			v-on:select="establishmentsSelected=true"
 			v-on:loaded="handleEstablishmentsLoaded"
 			/>
 		<data-loader
 			ref="tilesLoader"
 			label="Tiles"
+			v-on:select="tilesSelected=true"
 			v-on:loaded="handleTilesLoaded"
 			/>
 
 		<button
 			class="w3-green w3-button w3-round"
 			v-on:click="load"
+			v-bind:disabled="!(establishmentsSelected&&tilesSelected)"
 			>
 			<i class="fa fa-upload fa-lg"></i>
 			Load data
@@ -32,7 +35,9 @@
 			"data-loader": DataLoader
 		
 		data: () ->
+			establishmentsSelected: false
 			establishmentsLoaded: false
+			tilesSelected: false
 			tilesLoaded: false
 			loadedData: {}
 

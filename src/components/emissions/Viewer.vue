@@ -39,6 +39,12 @@
 
 			<tile-popup v-if="selectedTile" v-bind:tile="selectedTile">
 			</tile-popup>
+			<establishment-popup
+				v-if="selectedEstablishment"
+				v-bind:lmap="lmap"
+				v-bind:establishment="selectedEstablishment"
+				v-bind:establishments="establishments"
+				/>
 		</div>
 	</div>
 
@@ -50,6 +56,7 @@ import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
 import TilePopup from "./map/TilePopup"
+import EstablishmentPopup from "./map/EstablishmentPopup"
 import DisplayConfig from "./toolbar/DisplayConfig"
 import ZoomConfig from "./toolbar/ZoomConfig"
 import TilesConfig from "./toolbar/TilesConfig"
@@ -61,6 +68,7 @@ export default
 
 	components:
 		"tile-popup": TilePopup
+		"establishment-popup": EstablishmentPopup
 		"display-config": DisplayConfig
 		"zoom-config": ZoomConfig
 		"tiles-config": TilesConfig
@@ -72,7 +80,7 @@ export default
 		mapInitialized: false # A flag to determine if we sould fly to bounds again
 		boundingBox: null
 		pollutionPeeks: {}
-		establishments: []
+		establishments: {}
 		selectedEstablishment: null
 		tiles: {}
 		selectedTile: null
@@ -88,8 +96,8 @@ export default
 
 		handleDataLoaded: (data) ->
 			this.clear()
-			this.buildEstablishments(data.establishments)
 			this.buildTiles(data.tiles)
+			this.buildEstablishments(data.establishments)
 
 		buildEstablishments: (establishments) ->
 			self = this
@@ -104,9 +112,12 @@ export default
 						circle.setStyle(
 							color: "red"
 							)
+					circle.on(
+						click: () ->
+							self.selectedEstablishment = establishment
+						)
 					establishment.mapObject = circle
-					self.establishments.push(establishment)
-			this.selectedEstablishment = self.establishments[0].mapObject
+					self.$set(self.establishments, establishment.id, establishment)
 
 
 		buildTiles: (tiles) ->
@@ -149,8 +160,7 @@ export default
 				this.boundingBox.remove()
 				this.boundingBox = null
 
-			establishment.mapObject.remove() for establishment in this.establishments
-			this.establishments = []
+			establishment.mapObject.remove() for _, establishment of this.establishments
 
 			for tileLine in Object.values(this.tiles)
 				do (tileLine) ->

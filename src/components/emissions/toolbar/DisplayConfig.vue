@@ -26,7 +26,7 @@
 				required: true
 			establishments:
 				required: true
-				type: Array
+				type: Object
 			tiles:
 				required: true
 				type: Object
@@ -47,11 +47,11 @@
 			handleEstablishmentsDisplay: (display) ->
 				self = this
 				if display
-					for establishment in this.establishments
+					for _, establishment of this.establishments
 						do (establishment) ->
 							establishment.mapObject.addTo(self.lmap)
 				else
-					for establishment in this.establishments
+					for _, establishment of this.establishments
 						do (establishment) ->
 							establishment.mapObject.remove()
 
