@@ -33,13 +33,21 @@
 				/>
 			</accordion>
 			<accordion label="Example">
-			<button
-				class="w3-button w3-margin w3-blue w3-round w3-large"
-				v-on:click="loadExample"
-				>
-				<i class="fas fa-cloud-download-alt"></i>
-				Load example
-			</button>
+			<div class="w3-container">
+				<button
+					class="w3-button w3-block w3-margin-top w3-blue w3-round w3-large"
+					v-on:click="loadExample"
+					>
+					<i class="fas fa-cloud-download-alt"></i>
+					Load example
+				</button>
+				<a
+					class="w3-button w3-block w3-margin-top w3-round w3-large w3-light-blue"
+					href="https://github.com/smartgov-liris/lez-viewer#examples" target="_blank">
+					<i class="fas fa-info-circle"></i>
+					example information
+				</a>
+			</div>
 			</accordion>
 
 		</div>

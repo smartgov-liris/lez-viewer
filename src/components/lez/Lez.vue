@@ -10,7 +10,7 @@
 				v-on:loaded="handleLoadedEstablishments"
 				/>
 			<button
-				class="w3-green w3-button w3-round"
+				class="w3-green w3-button w3-block w3-round"
 				v-bind:disabled="!establishmentsFileReady"
 				v-on:click="loadEstablishments">
 				<i class="fa fa-upload fa-lg"></i>
@@ -38,12 +38,14 @@
 			</accordion>
 			
 			<accordion label="Download" expand>
-			<button
-				class="w3-green w3-button w3-round w3-margin"
-				v-on:click="downloadJson">
-				<i class="fa fa-download fa-lg"></i>
-				Download JSON
-			</button>
+			<div class="w3-margin">
+				<button
+					class="w3-green w3-button w3-block w3-round w3-margin"
+					v-on:click="downloadJson">
+					<i class="fa fa-download fa-lg"></i>
+					Download JSON
+				</button>
+			</div>
 			</accordion>
 
 			<accordion label="Import" expand>
@@ -55,7 +57,7 @@
 				/>
 
 			<button
-				class="w3-green w3-button w3-round"
+				class="w3-green w3-button w3-block w3-round"
 				v-bind:disabled="!lezFileReady"
 				v-on:click="loadLez">
 				<i class="fa fa-upload fa-lg"></i>
@@ -64,13 +66,21 @@
 			</div>
 			</accordion>
 			<accordion label="Example">
-			<button
-				class="w3-button w3-margin w3-blue w3-round w3-large"
-				v-on:click="loadExample"
-				>
-				<i class="fas fa-cloud-download-alt"></i>
-				Load example
-			</button>
+			<div class="w3-container">
+				<button
+					class="w3-button w3-block w3-margin-top w3-blue w3-round w3-large"
+					v-on:click="loadExample"
+					>
+					<i class="fas fa-cloud-download-alt"></i>
+					Load example
+				</button>
+				<a
+					class="w3-button w3-block w3-margin-top w3-round w3-large w3-light-blue"
+					href="https://github.com/smartgov-liris/lez-viewer#examples" target="_blank">
+					<i class="fas fa-info-circle"></i>
+					example information
+				</a>
+			</div>
 			</accordion>
 
 		</div>

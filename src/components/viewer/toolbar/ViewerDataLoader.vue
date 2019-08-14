@@ -14,7 +14,7 @@
 			/>
 
 		<button
-			class="w3-green w3-button w3-round"
+			class="w3-green w3-button w3-block w3-round"
 			v-on:click="load"
 			v-bind:disabled="!(establishmentsSelected&&tilesSelected)"
 			>
