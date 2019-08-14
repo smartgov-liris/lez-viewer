@@ -12,6 +12,11 @@ It allows the user to perform two main actions :
   - Dynamic establishments and tiles interactions
   - Generate pollution maps by pollutants
   - Customize visualization parameters
+  
+# Examples
+Examples of input / output files can be found in [the examples folder](https://github.com/smartgov-liris/lez-viewer/tree/master/public/examples)
+
+Those files are used by the **Load Example** buttons of the LEZ and Emissions tabs.
 
 ## Vue project setup
 This project is a [Vue CLI](https://cli.vuejs.org/) project. The following commands are available from the root of the project to compile sources. (make sure `npm` is installed)
