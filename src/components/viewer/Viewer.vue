@@ -1,6 +1,6 @@
 <template>
-	<div id="viewer-container" class="w3-cell-row">
-		<div id="viewer-toolbar" class="w3-cell w3-cell-top">
+	<div id="viewer-container">
+		<div id="viewer-toolbar" class="w3-sidebar w3-bar-block">
 			<accordion label="Data" expand>
 				<viewer-data-loader
 					ref="dataLoader"
@@ -58,7 +58,7 @@
 			</accordion>
 
 		</div>
-		<div id="viewer-map-container" class="w3-cell">
+		<div id="viewer-map-container">
 			<div id="viewer-map"/>
 
 			<tile-popup v-if="selectedTile" v-bind:tile="selectedTile">
@@ -246,13 +246,14 @@ export default
 
 #viewer-toolbar {
 	height: 100%;
+	width: 25%;
+	max-height: 90%;
 }
 
 #viewer-map-container {
 	width: 75%;
 	height: 100%;
-	margin-left: auto;
-	margin-right: auto;
+	margin-left: 25%;
 }
 
 #viewer-map {

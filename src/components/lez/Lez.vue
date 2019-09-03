@@ -1,6 +1,6 @@
 <template>
-	<div id="lez-container" class="w3-cell-row">
-		<div id="lez-toolbar" class="w3-cell w3-cell-top">
+	<div id="lez-container">
+		<div id="lez-toolbar" class="w3-sidebar w3-bar-block">
 			<accordion label="Data">
 			<div class="w3-margin">
 			<data-loader
@@ -84,7 +84,7 @@
 			</accordion>
 
 		</div>
-		<div id="lez-map-container" class="w3-cell">
+		<div id="lez-map-container">
 			<div id="lez-map"/>
 			<establishment-popup
 				v-if="selectedEstablishment"
@@ -262,13 +262,14 @@ export default
 }
 
 #lez-toolbar {
-	height: 100%;
+	max-height: 90%;
+	width: 25%;
 }
 
 #lez-map-container {
 	height: 100%;
 	width: 75%;
-	padding-bottom: 8px;
+	margin-left: 25%;
 }
 
 #lez-map {

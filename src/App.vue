@@ -79,7 +79,7 @@ export default
 }
 
 html {
-	height: 100%;
+	height: 100vh;
 }
 
 body {
