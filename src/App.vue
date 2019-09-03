@@ -13,23 +13,65 @@
 			</div>
 			<div id="nav-bar" class="w3-bar w3-light-grey">
 				<button
-					class="w3-bar-item w3-button"
+					class="w3-bar-item w3-button nav-bar-item"
 					v-on:click="selectLez"
 					>
 					Lez
 				</button>
+				<button
+					class="w3-bar-item w3-button nav-bar-item"
+					v-on:click="selectViewer"
+					>
+					Emissions
+				</button>
+				<div id="examples-dropdown" class="w3-bar-item
+					w3-dropdown-hover nav-bar-item">
 					<button
-						class="w3-bar-item w3-button"
-						v-on:click="selectViewer"
-						>
-						Emissions
+						id="examples-dropdown-button"
+						class="w3-button">
+						<i class="fas fa-caret-down"></i>
+						Examples
 					</button>
+					<div id="examples-dropdown-content" class="w3-dropdown-content w3-bar-block w3-border">
+						<button
+							class="w3-bar-item w3-button"
+							@click="loadExample('lez', 'no_lez_tiles')"
+							>
+							<i class="fas fa-download w3-margin-right"></i><b>No LEZ</b>
+						</button>
+						<button
+							class="w3-bar-item w3-button"
+							@click="loadExample('lez_1', 'lez_1_tiles')"
+							>
+							<i class="fas fa-download w3-margin-right"></i><b>LEZ 1</b>
+						</button>
+						<button
+							class="w3-bar-item w3-button"
+							@click="loadExample('lez_2', 'lez_2_tiles')"
+							>
+							<i class="fas fa-download w3-margin-right"></i><b>LEZ 2</b>
+						</button>
+						<a
+							class="w3-button w3-bar-item"
+							href="https://github.com/smartgov-liris/lez-viewer#examples" target="_blank">
+							<i class="fas fa-info-circle"></i>
+							examples information
+						</a>
+
+					</div>
+				</div>
 			</div>
 		</header>
 		<div id="main_body">
 			<keep-alive>
-			<lez v-if="selectedTab == 'lez'" ref="lez"/>
-			<viewer v-if="selectedTab == 'viewer'" ref="viewer"/>
+			<lez
+				v-if="selectedTab == 'lez'"
+				v-bind:exampleLez="exampleLez"
+				ref="lez"/>
+			<viewer
+				v-if="selectedTab == 'viewer'"
+				v-bind:exampleTiles="exampleTiles"
+				ref="viewer"/>
 			</keep-alive>
 		</div>
 	</div>
@@ -47,6 +89,8 @@ export default
 	
 	data: () ->
 		selectedTab: "lez"
+		exampleLez: ""
+		exampleTiles: ""
 
 	methods:
 		selectLez: () ->
@@ -54,6 +98,10 @@ export default
 
 		selectViewer: () ->
 			this.selectedTab = "viewer"
+
+		loadExample: (lez, tiles) ->
+			this.exampleLez = lez
+			this.exampleTiles = tiles
 
 </script>
 
@@ -72,6 +120,22 @@ export default
 
 #nav-bar {
 	height: 40%;
+}
+
+.nav-bar-item {
+	height: 100%;
+}
+
+#examples-dropdown {
+	padding: 0!important;
+}
+
+#examples-dropdown-button {
+	height: 100%;
+}
+
+#examples-dropdown-content {
+	z-index: 2000;
 }
 
 #main_body {

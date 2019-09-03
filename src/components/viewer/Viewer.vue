@@ -32,31 +32,6 @@
 				v-bind:pollutionPeeks="pollutionPeeksFiles"
 				/>
 			</accordion>
-			<accordion label="Example">
-			<div class="w3-container">
-				<button
-					class="w3-button w3-block w3-margin-top w3-blue w3-round w3-large"
-					v-on:click="loadExample('no_lez_tiles.json')"
-					>
-					<i class="fas fa-cloud-download-alt"></i>
-					Load example (without LEZ)
-				</button>
-				<button
-					class="w3-button w3-block w3-margin-top w3-blue w3-round w3-large"
-					v-on:click="loadExample('lez_tiles.json')"
-					>
-					<i class="fas fa-cloud-download-alt"></i>
-					Load example (with LEZ)
-				</button>
-				<a
-					class="w3-button w3-block w3-margin-top w3-round w3-large w3-light-blue"
-					href="https://github.com/smartgov-liris/lez-viewer#examples" target="_blank">
-					<i class="fas fa-info-circle"></i>
-					example information
-				</a>
-			</div>
-			</accordion>
-
 		</div>
 		<div id="viewer-map-container">
 			<div id="viewer-map"/>
@@ -108,6 +83,18 @@ export default
 		selectedEstablishment: null
 		tiles: {}
 		selectedTile: null
+	
+	props:
+		exampleTiles:
+			type: String
+	
+	watch:
+		exampleTiles:
+			handler: (newVal, old) ->
+				console.log "Example tiles : #{newVal}"
+				if newVal != ""
+					this.loadExample(newVal)
+			immediate: true
 
 	methods:
 		buildMap: () ->
@@ -155,7 +142,7 @@ export default
 
 			if !this.mapInitialized
 				this.mapInitialized = true
-				self.lmap.flyToBounds(tiles.bounds)
+				self.lmap.fitBounds(tiles.bounds)
 
 			# Adds the new pollutionPeeks to the dict
 			self.$set(self.pollutionPeeksFiles, fileName, {})
@@ -213,7 +200,7 @@ export default
 			)
 			.then(() ->
 				# Tiles example
-				fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/tiles/#{tileFile}")
+				fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/tiles/#{tileFile}.json")
 				.catch((error) ->
 					console.log error
 				)

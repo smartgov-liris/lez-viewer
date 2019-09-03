@@ -65,24 +65,6 @@
 			</button>
 			</div>
 			</accordion>
-			<accordion label="Example">
-			<div class="w3-container">
-				<button
-					class="w3-button w3-block w3-margin-top w3-blue w3-round w3-large"
-					v-on:click="loadExample"
-					>
-					<i class="fas fa-cloud-download-alt"></i>
-					Load example
-				</button>
-				<a
-					class="w3-button w3-block w3-margin-top w3-round w3-large w3-light-blue"
-					href="https://github.com/smartgov-liris/lez-viewer#examples" target="_blank">
-					<i class="fas fa-info-circle"></i>
-					example information
-				</a>
-			</div>
-			</accordion>
-
 		</div>
 		<div id="lez-map-container">
 			<div id="lez-map"/>
@@ -125,6 +107,14 @@ export default
 		establishments: {}
 		selectedEstablishment: null
 		displayEstablishments: true
+	props:
+		exampleLez:
+			type: String
+	
+	watch:
+		exampleLez: (newVal, old) ->
+			console.log "Example lez : #{newVal}"
+			this.loadExample(newVal)
 
 	methods:
 		buildMap: () ->
@@ -216,11 +206,11 @@ export default
 					do (_, establishment) ->
 						establishment.mapObject.remove()
 
-		loadExample: () ->
+		loadExample: (lezFile) ->
 			self = this
 
 			# LEZ example
-			fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/lez/lez.json")
+			fetch("#{process.env.VUE_APP_PUBLIC_PATH}/examples/lez/#{lezFile}.json")
 			.catch((error) ->
 				console.log error
 			)

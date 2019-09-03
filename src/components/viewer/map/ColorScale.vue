@@ -3,7 +3,7 @@
 		<!-- This component is not rendered, but its "innerHTML" is used to build
 	  the legend. See the script.-->
 		<div class="w3-round w3-light-grey w3-padding">
-			<h6> Legend - {{pollutant}} (ng.s<sup>-1</sup>.m<sup>-2</sup>) </h6>
+			<h6> Legend - {{pollutant}} (10<sup>-12</sup> g.s<sup>-1</sup>.m<sup>-2</sup>) </h6>
 			<table class="w3-table">
 				<tr v-for="range in ranges">
 					<td v-bind:style="{background: range.color}"></td>
@@ -62,9 +62,9 @@
 						do (i) ->
 							ranges.push(
 								color: self.color(i * 0.2)
-								min: Math.round(1e9 * (i - 1) * 0.2 *
+								min: Math.ceil(1e12 * (i - 1) * 0.2 *
 									self.pollutionPeek)
-								max: Math.round(1e9 * i * 0.2 *
+								max: Math.ceil(1e12 * i * 0.2 *
 									self.pollutionPeek)
 								)
 				return ranges

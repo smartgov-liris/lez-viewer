@@ -2,7 +2,8 @@
 	<div v-show="false" ref="popupBody">
 		<ul>
 			<li v-for="pollutant in pollutants">
-				{{pollutant}} : {{1.e9 * tile.pollution[pollutant]}} ng.s<sup>-1</sup>.m<sup>-2</sup>
+				{{pollutant}} : {{1.e12 * tile.pollution[pollutant]}}
+				10<sup>-12</sup> g.s<sup>-1</sup>.m<sup>-2</sup>
 			</li>
 		</ul>
 	</div>
