@@ -69,6 +69,7 @@
 							for tile in Object.values(tileLine)
 								do (tile) ->
 									tile.mapObject.remove()
+
 			refresh: () ->
 				self = this
 				for option, _ of this.display

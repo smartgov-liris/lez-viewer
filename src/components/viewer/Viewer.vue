@@ -81,7 +81,6 @@ import "leaflet/dist/leaflet.css"
 
 import TilePopup from "./map/TilePopup"
 import EstablishmentPopup from "./map/EstablishmentPopup"
-import ColorScale from "./map/ColorScale"
 import DisplayConfig from "./toolbar/DisplayConfig"
 import ZoomConfig from "./toolbar/ZoomConfig"
 import TilesConfig from "./toolbar/TilesConfig"
@@ -94,7 +93,6 @@ export default
 	components:
 		"tile-popup": TilePopup
 		"establishment-popup": EstablishmentPopup
-		"color-scale": ColorScale
 		"display-config": DisplayConfig
 		"zoom-config": ZoomConfig
 		"tiles-config": TilesConfig
