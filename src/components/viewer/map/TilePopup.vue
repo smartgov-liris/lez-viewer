@@ -2,7 +2,7 @@
 	<div v-show="false" ref="popupBody">
 		<ul>
 			<li v-for="pollutant in pollutants">
-				{{pollutant}} : {{tile.pollution[pollutant]}} g/s/m2
+				{{pollutant}} : {{1.e9 * tile.pollution[pollutant]}} ng.s<sup>-1</sup>.m<sup>-2</sup>
 			</li>
 		</ul>
 	</div>

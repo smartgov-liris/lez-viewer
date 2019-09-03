@@ -29,7 +29,7 @@
 				ref="colorConfig"
 				v-bind:lmap="lmap"
 				v-bind:tiles="tiles"
-				v-bind:pollutionPeeks="pollutionPeeks"
+				v-bind:pollutionPeeks="pollutionPeeksFiles"
 				/>
 			</accordion>
 			<accordion label="Example">
@@ -81,6 +81,7 @@ import "leaflet/dist/leaflet.css"
 
 import TilePopup from "./map/TilePopup"
 import EstablishmentPopup from "./map/EstablishmentPopup"
+import ColorScale from "./map/ColorScale"
 import DisplayConfig from "./toolbar/DisplayConfig"
 import ZoomConfig from "./toolbar/ZoomConfig"
 import TilesConfig from "./toolbar/TilesConfig"
@@ -93,6 +94,7 @@ export default
 	components:
 		"tile-popup": TilePopup
 		"establishment-popup": EstablishmentPopup
+		"color-scale": ColorScale
 		"display-config": DisplayConfig
 		"zoom-config": ZoomConfig
 		"tiles-config": TilesConfig
@@ -103,7 +105,7 @@ export default
 		lmap: null
 		mapInitialized: false # A flag to determine if we sould fly to bounds again
 		boundingBox: null
-		pollutionPeeks: {}
+		pollutionPeeksFiles: {}
 		establishments: {}
 		selectedEstablishment: null
 		tiles: {}
@@ -157,10 +159,13 @@ export default
 				this.mapInitialized = true
 				self.lmap.flyToBounds(tiles.bounds)
 
-			self.$set(self.pollutionPeeks, fileName, {})
+			# Adds the new pollutionPeeks to the dict
+			self.$set(self.pollutionPeeksFiles, fileName, {})
+
 			for pollutant, peek of tiles.pollutionPeeks
 				do (pollutant, peek) ->
-					self.$set(self.pollutionPeeks[fileName], pollutant, peek)
+					# Loop to force listeners
+					self.$set(self.pollutionPeeksFiles[fileName], pollutant, peek)
 
 			for lineIndex, tileLine of tiles.tiles
 				do (lineIndex, tileLine) ->

@@ -26,12 +26,24 @@
 		<select class="w3-select" v-model="pollutionPeeksOrigin">
 			<option v-for="(values, name) in pollutionPeeks" v-bind:value="name"> {{name}} </option>
 		</select>
+		<color-scale
+			v-bind:map="lmap"
+			v-bind:pollutionPeeks="pollutionPeeks[this.pollutionPeeksOrigin]"
+			v-bind:minHue="minHue"
+			v-bind:maxHue="maxHue"
+			v-bind:pollutant="pollutant"
+			/>
 	</div>
 </template>
 
 <script lang="coffee">
 
+	import ColorScale from "../map/ColorScale"
+
 	export default
+
+		components:
+			"color-scale": ColorScale
 
 		props:
 			lmap:
@@ -47,6 +59,7 @@
 			maxHue: 0
 			minHue: 200
 			opacity: 0.5
+			colorGradient: []
 			pollutants:
 				["CH4", "FC", "PM", "NOx", "VOC", "CO", "N2O", "NH3"]
 			pollutant: "NOx"
@@ -68,7 +81,10 @@
 			value in [0, 1]
 			###
 			linearHueGradient: (value) ->
-				"hsl(#{this.minHue + value * (this.maxHue - this.minHue)},100%,50%)"
+				currentTreshold = 0
+				while value > currentTreshold
+					currentTreshold += 0.2
+				"hsl(#{this.minHue + currentTreshold * (this.maxHue - this.minHue)},100%,50%)"
 
 			updateTilesColors: () ->
 				if this.pollutionPeeksOrigin
