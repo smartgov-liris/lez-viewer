@@ -53,7 +53,7 @@
 						</button>
 						<a
 							class="w3-button w3-bar-item"
-							href="https://github.com/smartgov-liris/lez-viewer#examples" target="_blank">
+							href="https://github.com/smartgov-liris/lez-viewer/wiki/Examples" target="_blank">
 							<i class="fas fa-info-circle"></i>
 							examples information
 						</a>
