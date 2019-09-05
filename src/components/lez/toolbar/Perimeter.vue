@@ -185,7 +185,7 @@
 					do (coordinates) ->
 						self.buildPoint(L.latLng(coordinates[0], coordinates[1]))
 
-				self.buildMode()
+				self.viewMode()
 
 
 			getPoints: () ->

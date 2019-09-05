@@ -107,6 +107,11 @@ export default
 		establishments: {}
 		selectedEstablishment: null
 		displayEstablishments: true
+
+		# True when the view has already been centered on
+		# LEZ, and should not be centered on establishments
+		centeredOnLez: false
+
 	props:
 		exampleLez:
 			type: String
@@ -167,7 +172,9 @@ export default
 		handleLoadedLez: (lez) ->
 			this.$refs.perimeter.load(lez.perimeter)
 			this.$refs.critAir.load(lez.allowed)
-			this.centerMap(lez.perimeter)
+			unless lez.perimeter.length == 0 or this.centeredOnLez
+				this.centerMap(lez.perimeter)
+				this.centeredOnLez = true
 
 		handleLoadedEstablishments: (establishments) ->
 			self = this
@@ -193,7 +200,8 @@ export default
 					establishmentsCoordinates.push(establishment.location)
 					
 			this.handleEstablishmentsDisplay()
-			this.centerMap(establishmentsCoordinates)
+			unless this.centeredOnLez
+				this.centerMap(establishmentsCoordinates)
 
 		handleEstablishmentsDisplay: () ->
 			if this.displayEstablishments

@@ -13,19 +13,19 @@
 			</div>
 			<div id="nav-bar" class="w3-bar w3-light-grey">
 				<button
-					class="w3-bar-item w3-button nav-bar-item"
+					class="w3-bar-item w3-button"
 					v-on:click="selectLez"
 					>
 					Lez
 				</button>
 				<button
-					class="w3-bar-item w3-button nav-bar-item"
+					class="w3-bar-item w3-button"
 					v-on:click="selectViewer"
 					>
 					Emissions
 				</button>
 				<div id="examples-dropdown" class="w3-bar-item
-					w3-dropdown-hover nav-bar-item">
+					w3-dropdown-hover">
 					<button
 						id="examples-dropdown-button"
 						class="w3-button">
@@ -35,7 +35,7 @@
 					<div id="examples-dropdown-content" class="w3-dropdown-content w3-bar-block w3-border">
 						<button
 							class="w3-bar-item w3-button"
-							@click="loadExample('lez', 'no_lez_tiles')"
+							@click="loadExample('no_lez', 'no_lez_tiles')"
 							>
 							<i class="fas fa-download w3-margin-right"></i><b>No LEZ</b>
 						</button>
@@ -60,6 +60,11 @@
 
 					</div>
 				</div>
+				<a class="w3-bar-item w3-button nav-bar-item"
+					href="https://github.com/smartgov-liris/lez-viewer/wiki"
+					target="_blank">
+					Manual
+				</a>
 			</div>
 		</header>
 		<div id="main_body">
@@ -120,10 +125,6 @@ export default
 
 #nav-bar {
 	height: 40%;
-}
-
-.nav-bar-item {
-	height: 100%;
 }
 
 #examples-dropdown {
