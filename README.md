@@ -4,17 +4,20 @@ This project has been designed in the context of the SmartGovLez project, in ord
 
 It allows the user to perform two main actions :
 
+## Lez tab (input process) :
+
 ![LEZ Design](screenshots/lez.png)
 
-- Lez tab (input process) :
   - Design LEZ perimeter
   - Customize CritAir permissions
   - Export designed LEZ to a .json file
   - Import a previously designed LEZ
-  
+
+
+## Viewer tab (output process) :
+
 ![Emissions](screenshots/emissions.png)
 
-- Viewer tab (output process) :
   - Import SmartGovLez outputs (establishments and tiles)
   - Dynamic establishments and tiles interactions
   - Generate pollution maps by pollutants
