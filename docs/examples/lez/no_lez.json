@@ -1,0 +1,10 @@
+{
+	"perimeter": [],
+	"allowed": [
+		"CRITAIR_1",
+		"CRITAIR_2",
+		"CRITAIR_3",
+		"CRITAIR_4",
+		"CRITAIR_5"
+	]
+}
