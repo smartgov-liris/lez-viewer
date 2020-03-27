@@ -2,7 +2,7 @@
 
 This project has been designed in the context of the SmartGovLez project, in order to easily handle model inputs and outputs.
 
-It available directly online at https://smartgov-liris.github.io/lez-viewer/
+It is available directly online at https://smartgov-liris.github.io/lez-viewer/
 
 It allows the user to perform two main actions :
 
