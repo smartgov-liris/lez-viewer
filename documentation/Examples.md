@@ -1,7 +1,7 @@
 The `Examples` dropdown menu allows you to easily load simulation results that
 has been established during the development of this project.
 
-Examples of input / output files can be found in [the examples folder](https://github.com/smartgov-liris/lez-viewer/tree/master/public/examples)
+Examples of input / output files can be found in [the examples folder](../public/examples).
 
 ![Examples Dropdown](examples-dropdown.png)
 
@@ -30,10 +30,8 @@ The provided examples has the following characteristics :
   - Craftsmen and services :
     - EURO1 Light Weight vehicles only
 
-The detailed [COPERT
-profile](https://github.com/smartgov-liris/SmartGovLezModel/wiki/COPERT-Profiles)
-can be found in the [SmartGovLezModel
-repository](https://github.com/smartgov-liris/SmartGovLezModel/blob/master/input/establishment/fleetProfiles.json).
+The detailed [COPERT profile](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/inputs/COPERT-Profiles.md)
+can be found in the [SmartGovLezModel repository](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/input/establishment/fleetProfiles.json).
 
 For the `LEZ 1` example, 18 establishments are concerned by the LEZ, so 18
 **EURO1** vehicles have been replaced by **EURO6** vehicles.
