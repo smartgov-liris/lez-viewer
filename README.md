@@ -27,10 +27,9 @@ It allows the user to perform two main actions :
 
 # Manual
 
-For more details about usage and [examples
-information](https://github.com/smartgov-liris/lez-viewer/wiki/Examples), see
-the [wiki of this
-repository](https://github.com/smartgov-liris/lez-viewer/wiki/).
+For more details about usage and 
+ [examples information](documentation/Examples.md), see the
+ [documentation of this repository](documentation/Home.md).
 
 
 # Vue project setup
