@@ -1,5 +1,5 @@
 The LEZ editor allow users to draw and edit low emission zones perimeters, that
-can then be downloaded and give as [input to the SmartGovLezModel](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/inputs/lez.md).
+can then be downloaded and give as [input to the SmartGovLezModelUFD](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/inputs/lez.md).
 
 ![LEZ](lez.png)
 
@@ -11,9 +11,9 @@ Establishments can be imported, in order to visualize them editing the LEZ.
 This is optional and has no impact on the LEZ output file.
 
 Establishments should be **json output files** produced by the
-[SmartGovLezModel](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/outputs/Standard-Outputs.md#establishments),
+[SmartGovLezModelUFD](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/outputs/Standard-Outputs.md#establishments),
 what should node be confused with establishments *input* data of the
-SmartGovLezModel.
+SmartGovLezModelUFD.
 
 # Tools
 
@@ -41,7 +41,7 @@ in the simulation.
 ![LEZ Download](lez-download.png)
 
 The `Download` button can be used to download the current LEZ as a ready to use
-[SmartGovLezModel LEZ input file](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/inputs/lez.md#format).
+[SmartGovLezModelUFD LEZ input file](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/inputs/lez.md#format).
 
 # Import
 

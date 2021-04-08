@@ -31,7 +31,7 @@ The provided examples has the following characteristics :
     - EURO1 Light Weight vehicles only
 
 The detailed [COPERT profile](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/documentation/inputs/COPERT-Profiles.md)
-can be found in the [SmartGovLezModel repository](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/input/establishment/fleetProfiles.json).
+can be found in the [SmartGovLezModelUFD repository](https://github.com/smartgov-liris/SmartGovLezModelUFD/blob/master/input/establishment/fleetProfiles.json).
 
 For the `LEZ 1` example, 18 establishments are concerned by the LEZ, so 18
 **EURO1** vehicles have been replaced by **EURO6** vehicles.
